@@ -1,0 +1,86 @@
+@model List<Hotel.Web.Models.Habitacion>
+@{
+    ViewData["Title"] = "Habitaciones";
+}
+
+<div class="page-header">
+    <div class="page-icon">🛏️</div>
+    <div>
+        <h1>Habitaciones</h1>
+        <p class="text-muted mb-0">Gestión de habitaciones activas del hotel</p>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label" for="idTipo">Filtrar por tipo</label>
+                @Html.DropDownList("idTipo", ViewBag.Tipos as SelectList,
+                    "— Todos los tipos —", new { @class = "form-select", id = "idTipo" })
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary" id="btnFiltrar">🔍 Filtrar</button>
+                <a asp-action="Index" class="btn btn-outline-secondary ms-1">✖ Limpiar</a>
+            </div>
+            <div class="col-auto ms-auto">
+                <a asp-action="Create" class="btn btn-success" id="btnNuevaHabitacion">
+                    ➕ Nueva Habitación
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No hay habitaciones activas@(ViewBag.FiltroTipo != null ? " para el tipo seleccionado" : "").</div>
+}
+else
+{
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Número</th>
+                        <th>Piso</th>
+                        <th>Tipo</th>
+                        <th>Capacidad</th>
+                        <th class="text-end">Precio/Noche</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var h in Model)
+                    {
+                        <tr>
+                            <td><strong>@h.Numero</strong></td>
+                            <td>@h.Piso</td>
+                            <td>
+                                <span class="badge text-bg-primary">
+                                    @h.IdTipoHabitacionNavigation.Nombre
+                                </span>
+                            </td>
+                            <td>@h.IdTipoHabitacionNavigation.Capacidad pax</td>
+                            <td class="text-end fw-semibold">
+                                S/. @h.IdTipoHabitacionNavigation.PrecioNoche.ToString("N2")
+                            </td>
+                            <td class="text-center">
+                                <a asp-action="Details" asp-route-id="@h.IdHabitacion"
+                                   class="btn btn-sm btn-outline-info" title="Detalles">🔎</a>
+                                <a asp-action="Edit" asp-route-id="@h.IdHabitacion"
+                                   class="btn btn-sm btn-outline-warning" title="Editar">✏️</a>
+                                <a asp-action="Delete" asp-route-id="@h.IdHabitacion"
+                                   class="btn btn-sm btn-outline-danger" title="Dar de baja">🗑️</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer text-muted small">
+            Total: @Model.Count habitación(es) activa(s)
+        </div>
+    </div>
+}

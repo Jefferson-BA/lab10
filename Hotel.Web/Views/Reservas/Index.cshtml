@@ -1,0 +1,93 @@
+@model List<Hotel.Web.Models.Reserva>
+@{
+    ViewData["Title"] = "Reservas";
+}
+
+<div class="page-header">
+    <div class="page-icon">📋</div>
+    <div>
+        <h1>Reservas</h1>
+        <p class="text-muted mb-0">Listado completo de reservas del hotel</p>
+    </div>
+</div>
+
+<div class="mb-3 d-flex justify-content-end">
+    <a asp-action="Create" class="btn btn-success" id="btnNuevaReserva">
+        ➕ Nueva Reserva
+    </a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No hay reservas registradas.</div>
+}
+else
+{
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Huésped</th>
+                        <th>Habitación</th>
+                        <th>Ingreso</th>
+                        <th>Salida</th>
+                        <th class="text-center">Noches</th>
+                        <th class="text-end">Total Est.</th>
+                        <th>Observaciones</th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model)
+                    {
+                        var noches = r.FechaSalida.DayNumber - r.FechaIngreso.DayNumber;
+                        var total  = noches * r.IdHabitacionNavigation.IdTipoHabitacionNavigation.PrecioNoche;
+                        <tr>
+                            <td class="text-muted small">@r.IdReserva</td>
+                            <td>
+                                <div class="fw-semibold">@r.IdHuespedNavigation.Apellidos, @r.IdHuespedNavigation.Nombres</div>
+                                <div class="text-muted small">DNI: @r.IdHuespedNavigation.Dni</div>
+                            </td>
+                            <td>
+                                Hab. <strong>@r.IdHabitacionNavigation.Numero</strong>
+                                <div class="text-muted small">@r.IdHabitacionNavigation.IdTipoHabitacionNavigation.Nombre</div>
+                            </td>
+                            <td>@r.FechaIngreso.ToString("dd/MM/yyyy")</td>
+                            <td>@r.FechaSalida.ToString("dd/MM/yyyy")</td>
+                            <td class="text-center">@noches</td>
+                            <td class="text-end fw-semibold">S/. @total.ToString("N2")</td>
+                            <td class="text-muted small">@(string.IsNullOrWhiteSpace(r.Observaciones) ? "—" : r.Observaciones)</td>
+                            <td class="text-center">
+                                <span class="badge badge-estado-@r.Estado rounded-pill px-3">@r.Estado</span>
+                            </td>
+                            <td class="text-center">
+                                @if (r.Estado == "Pendiente" || r.Estado == "Confirmada")
+                                {
+                                    <form asp-action="Cancelar" asp-route-id="@r.IdReserva"
+                                          method="post" class="d-inline"
+                                          onsubmit="return confirm('¿Cancelar la reserva #@r.IdReserva?')">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                id="btnCancelar-@r.IdReserva" title="Cancelar reserva">
+                                            ❌ Cancelar
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">—</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer text-muted small">
+            Total: @Model.Count reserva(s)
+        </div>
+    </div>
+}

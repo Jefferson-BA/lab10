@@ -1,0 +1,114 @@
+@model Hotel.Web.Models.Reserva
+@{
+    ViewData["Title"] = "Nueva Reserva";
+    var huespedes    = ViewBag.Huespedes  as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+    var habitaciones = ViewBag.Habitaciones as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+    var hoy = DateOnly.FromDateTime(DateTime.Today);
+}
+
+<div class="page-header">
+    <div class="page-icon">📌</div>
+    <h1>Nueva Reserva</h1>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-header" style="background:var(--clr-brand);color:#fff">
+                Datos de la reserva
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post" id="formCrearReserva">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label class="form-label" for="IdHuesped">Huésped *</label>
+                        <select name="IdHuesped" id="IdHuesped" class="form-select">
+                            <option value="">— Seleccione un huésped —</option>
+                            @foreach (var item in huespedes)
+                            {
+                                if (item.Selected)
+                                {
+                                    <option value="@item.Value" selected="selected">@item.Text</option>
+                                }
+                                else
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="IdHuesped" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="IdHabitacion">Habitación *</label>
+                        <select name="IdHabitacion" id="IdHabitacion" class="form-select">
+                            <option value="">— Seleccione una habitación —</option>
+                            @foreach (var item in habitaciones)
+                            {
+                                if (item.Selected)
+                                {
+                                    <option value="@item.Value" selected="selected">@item.Text</option>
+                                }
+                                else
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="IdHabitacion" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="FechaIngreso" class="form-label">Fecha Ingreso *</label>
+                            <input asp-for="FechaIngreso" type="date" class="form-control"
+                                   id="FechaIngreso"
+                                   value="@Model.FechaIngreso.ToString("yyyy-MM-dd")"
+                                   min="@hoy.ToString("yyyy-MM-dd")" />
+                            <span asp-validation-for="FechaIngreso" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="FechaSalida" class="form-label">Fecha Salida *</label>
+                            <input asp-for="FechaSalida" type="date" class="form-control"
+                                   id="FechaSalida"
+                                   value="@Model.FechaSalida.ToString("yyyy-MM-dd")"
+                                   min="@hoy.AddDays(1).ToString("yyyy-MM-dd")" />
+                            <span asp-validation-for="FechaSalida" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Observaciones" class="form-label">Observaciones</label>
+                        <textarea asp-for="Observaciones" class="form-control" id="Observaciones"
+                                  rows="3" maxlength="200"
+                                  placeholder="Notas adicionales sobre la reserva (opcional)"></textarea>
+                        <span asp-validation-for="Observaciones" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary" id="btnGuardarReserva">
+                            💾 Guardar Reserva
+                        </button>
+                        <a asp-action="Disponibles" class="btn btn-outline-secondary">← Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.getElementById('FechaIngreso').addEventListener('change', function () {
+            var salida = document.getElementById('FechaSalida');
+            if (this.value >= salida.value) {
+                var d = new Date(this.value);
+                d.setDate(d.getDate() + 1);
+                salida.value = d.toISOString().slice(0, 10);
+            }
+            salida.min = this.value;
+        });
+    </script>
+}

@@ -1,0 +1,59 @@
+@model Hotel.Web.Models.Habitacion
+@{
+    ViewData["Title"] = "Editar Habitación";
+}
+
+<div class="page-header">
+    <div class="page-icon">✏️</div>
+    <h1>Editar Habitación @Model.Numero</h1>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header" style="background:hsl(38,90%,52%);color:#fff">
+                Editando habitación
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" method="post" id="formEditarHabitacion">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="IdHabitacion" />
+                    <input type="hidden" asp-for="Activo" />
+
+                    <div class="mb-3">
+                        <label asp-for="Numero" class="form-label">Número de habitación *</label>
+                        <input asp-for="Numero" class="form-control" id="NumeroEdit"
+                               maxlength="10" />
+                        <span asp-validation-for="Numero" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Piso" class="form-label">Piso *</label>
+                        <input asp-for="Piso" type="number" class="form-control" id="PisoEdit" min="1" />
+                        <span asp-validation-for="Piso" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="IdTipoHabitacion" class="form-label">Tipo de habitación *</label>
+                        <select asp-for="IdTipoHabitacion" asp-items="ViewBag.IdTipoHabitacion"
+                                class="form-select" id="IdTipoHabitacionEdit">
+                            <option value="">— Seleccione un tipo —</option>
+                        </select>
+                        <span asp-validation-for="IdTipoHabitacion" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-warning" id="btnActualizarHabitacion">
+                            💾 Actualizar
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">← Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

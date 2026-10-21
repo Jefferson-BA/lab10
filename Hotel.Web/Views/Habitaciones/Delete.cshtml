@@ -1,0 +1,46 @@
+@model Hotel.Web.Models.Habitacion
+@{
+    ViewData["Title"] = "Dar de Baja Habitación";
+}
+
+<div class="page-header">
+    <div class="page-icon">🗑️</div>
+    <h1>Dar de Baja Habitación</h1>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                ⚠️ Confirmar baja lógica
+            </div>
+            <div class="card-body">
+                <p class="mb-3">
+                    ¿Desea dar de baja la habitación <strong>@Model.Numero</strong>?
+                    Esta operación es un <strong>borrado lógico</strong> (se establece
+                    <code>Activo = 0</code>) y la habitación dejará de aparecer en los listados.
+                </p>
+
+                <dl class="row mb-3">
+                    <dt class="col-sm-5">Número</dt>
+                    <dd class="col-sm-7">@Model.Numero</dd>
+                    <dt class="col-sm-5">Piso</dt>
+                    <dd class="col-sm-7">@Model.Piso</dd>
+                    <dt class="col-sm-5">Tipo</dt>
+                    <dd class="col-sm-7">@Model.IdTipoHabitacionNavigation.Nombre</dd>
+                </dl>
+
+                <form asp-action="Delete" method="post" id="formEliminarHabitacion">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="IdHabitacion" />
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger" id="btnConfirmarBaja">
+                            🗑️ Confirmar Baja
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">← Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

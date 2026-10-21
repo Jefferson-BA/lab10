@@ -1,0 +1,48 @@
+@model Hotel.Web.Models.Habitacion
+@{
+    ViewData["Title"] = "Detalles de Habitación";
+}
+
+<div class="page-header">
+    <div class="page-icon">🛏️</div>
+    <h1>Detalles de Habitación</h1>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                Habitación @Model.Numero
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">Número</dt>
+                    <dd class="col-sm-7">@Model.Numero</dd>
+
+                    <dt class="col-sm-5">Piso</dt>
+                    <dd class="col-sm-7">@Model.Piso</dd>
+
+                    <dt class="col-sm-5">Tipo</dt>
+                    <dd class="col-sm-7">@Model.IdTipoHabitacionNavigation.Nombre</dd>
+
+                    <dt class="col-sm-5">Capacidad</dt>
+                    <dd class="col-sm-7">@Model.IdTipoHabitacionNavigation.Capacidad persona(s)</dd>
+
+                    <dt class="col-sm-5">Precio/Noche</dt>
+                    <dd class="col-sm-7 fw-bold">S/. @Model.IdTipoHabitacionNavigation.PrecioNoche.ToString("N2")</dd>
+
+                    <dt class="col-sm-5">Estado</dt>
+                    <dd class="col-sm-7">
+                        <span class="badge @(Model.Activo ? "text-bg-success" : "text-bg-danger")">
+                            @(Model.Activo ? "Activa" : "Inactiva")
+                        </span>
+                    </dd>
+                </dl>
+            </div>
+            <div class="card-footer d-flex gap-2">
+                <a asp-action="Edit" asp-route-id="@Model.IdHabitacion" class="btn btn-warning btn-sm">✏️ Editar</a>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm">← Volver</a>
+            </div>
+        </div>
+    </div>
+</div>

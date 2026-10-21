@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Sistema de gestión hotelera: habitaciones, reservas y disponibilidad." />
+    <title>@ViewData["Title"] - Hotel Aurora</title>
+    <script type="importmap"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Hotel.Web.styles.css" asp-append-version="true" />
+    <style>
+        /* ── Design System ─────────────────────────────────────────── */
+        :root {
+            --hue-brand: 222;
+            --clr-brand:      hsl(var(--hue-brand), 72%, 40%);
+            --clr-brand-dark: hsl(var(--hue-brand), 72%, 28%);
+            --clr-brand-light:hsl(var(--hue-brand), 72%, 96%);
+            --clr-accent:     hsl(38, 90%, 52%);
+            --clr-surface:    hsl(210, 20%, 98%);
+            --clr-surface-2:  hsl(210, 15%, 94%);
+            --clr-text:       hsl(220, 20%, 15%);
+            --clr-muted:      hsl(220, 10%, 50%);
+            --radius-card:    0.75rem;
+            --shadow-card:    0 4px 20px rgba(0,0,0,.08);
+            --transition:     0.2s ease;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--clr-surface);
+            color: var(--clr-text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── Navbar ────────────────────────────────────────────────── */
+        .hotel-nav {
+            background: linear-gradient(135deg, var(--clr-brand-dark) 0%, var(--clr-brand) 100%);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            box-shadow: 0 2px 16px rgba(0,0,0,.25);
+        }
+        .hotel-nav .navbar-brand {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: #fff !important;
+            letter-spacing: -.5px;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .75rem 0;
+        }
+        .hotel-nav .navbar-brand .brand-icon {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,.18);
+            border-radius: .5rem;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+        }
+        .hotel-nav .nav-link {
+            color: rgba(255,255,255,.82) !important;
+            font-weight: 500;
+            font-size: .9rem;
+            padding: 1.2rem 1rem !important;
+            border-bottom: 3px solid transparent;
+            transition: color var(--transition), border-color var(--transition);
+        }
+        .hotel-nav .nav-link:hover,
+        .hotel-nav .nav-link.active {
+            color: #fff !important;
+            border-bottom-color: var(--clr-accent);
+        }
+        .hotel-nav .navbar-toggler {
+            border-color: rgba(255,255,255,.4);
+        }
+        .hotel-nav .navbar-toggler-icon {
+            filter: brightness(0) invert(1);
+        }
+
+        /* ── Main container ────────────────────────────────────────── */
+        main.container { flex: 1; padding-top: 2rem; padding-bottom: 3rem; }
+
+        /* ── Cards ─────────────────────────────────────────────────── */
+        .card {
+            border: none;
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-card);
+            transition: box-shadow var(--transition), transform var(--transition);
+        }
+        .card:hover { box-shadow: 0 8px 32px rgba(0,0,0,.12); transform: translateY(-2px); }
+        .card-header {
+            border-radius: var(--radius-card) var(--radius-card) 0 0 !important;
+            font-weight: 600;
+        }
+
+        /* ── Buttons ────────────────────────────────────────────────── */
+        .btn { border-radius: .5rem; font-weight: 500; transition: all var(--transition); }
+        .btn-primary {
+            background: var(--clr-brand);
+            border-color: var(--clr-brand);
+        }
+        .btn-primary:hover {
+            background: var(--clr-brand-dark);
+            border-color: var(--clr-brand-dark);
+            transform: translateY(-1px);
+        }
+        .btn-sm { font-size: .8rem; }
+
+        /* ── Badges ─────────────────────────────────────────────────── */
+        .badge-estado-Pendiente   { background: hsl(38,90%,52%); color:#fff; }
+        .badge-estado-Confirmada  { background: hsl(145,60%,36%); color:#fff; }
+        .badge-estado-Cancelada   { background: hsl(0,60%,50%); color:#fff; }
+        .badge-estado-Finalizada  { background: hsl(220,10%,55%); color:#fff; }
+
+        /* ── Tables ─────────────────────────────────────────────────── */
+        .table { border-radius: .5rem; overflow: hidden; }
+        .table thead th {
+            background: var(--clr-brand);
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            font-size: .85rem;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+        .table tbody tr { transition: background var(--transition); }
+        .table tbody tr:hover { background: var(--clr-brand-light); }
+
+        /* ── Forms ─────────────────────────────────────────────────── */
+        .form-control, .form-select {
+            border-radius: .5rem;
+            border-color: hsl(220,15%,85%);
+            transition: border-color var(--transition), box-shadow var(--transition);
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--clr-brand);
+            box-shadow: 0 0 0 3px hsl(var(--hue-brand),72%,40%,.15);
+        }
+        label.form-label { font-weight: 500; font-size: .9rem; }
+
+        /* ── Alerts / TempData ──────────────────────────────────────── */
+        .alert { border-radius: var(--radius-card); }
+
+        /* ── Page header ────────────────────────────────────────────── */
+        .page-header {
+            display: flex; align-items: center; gap: 1rem;
+            margin-bottom: 1.75rem;
+        }
+        .page-header h1 {
+            font-size: 1.6rem; font-weight: 700;
+            color: var(--clr-brand-dark); margin: 0;
+        }
+        .page-header .page-icon {
+            width: 48px; height: 48px;
+            background: var(--clr-brand-light);
+            border-radius: .75rem;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; flex-shrink: 0;
+        }
+
+        /* ── Footer ─────────────────────────────────────────────────── */
+        footer {
+            background: hsl(220,20%,18%);
+            color: rgba(255,255,255,.65);
+            padding: 1.25rem 0;
+            font-size: .85rem;
+            text-align: center;
+        }
+        footer a { color: rgba(255,255,255,.8); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md hotel-nav">
+            <div class="container">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                    <span class="brand-icon">🏨</span>
+                    Hotel Aurora
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navMain" aria-controls="navMain"
+                        aria-expanded="false" aria-label="Alternar navegación">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navMain">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Habitaciones" ? "active" : "")"
+                               asp-controller="Habitaciones" asp-action="Index">
+                                🛏️ Habitaciones
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Reservas" && ViewContext.RouteData.Values["action"]?.ToString() == "Disponibles" ? "active" : "")"
+                               asp-controller="Reservas" asp-action="Disponibles">
+                                🔍 Disponibilidad
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Reservas" && ViewContext.RouteData.Values["action"]?.ToString() != "Disponibles" ? "active" : "")"
+                               asp-controller="Reservas" asp-action="Index">
+                                📋 Reservas
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        @* Mensaje de éxito via TempData (PRG) *@
+        @if (TempData["Exito"] is string msg)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                ✅ @msg
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            </div>
+        }
+        @RenderBody()
+    </main>
+
+    <footer>
+        <div class="container">
+            &copy; @DateTime.Now.Year — Hotel Aurora · Sistema de Gestión Hotelera
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

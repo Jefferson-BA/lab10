@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Hotel.Web/Hotel.Web.csproj" />
+  <Project Path="lab10/lab10.csproj" />
+</Solution>

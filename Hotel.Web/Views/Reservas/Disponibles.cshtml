@@ -1,0 +1,102 @@
+@model List<Hotel.Web.Models.Habitacion>?
+@{
+    ViewData["Title"] = "Disponibilidad de Habitaciones";
+    DateOnly? ingreso = ViewBag.Ingreso;
+    DateOnly? salida  = ViewBag.Salida;
+    int?      noches  = ViewBag.Noches;
+    DateOnly  hoy     = ViewBag.Hoy;
+}
+
+<div class="page-header">
+    <div class="page-icon">🔍</div>
+    <div>
+        <h1>Disponibilidad de Habitaciones</h1>
+        <p class="text-muted mb-0">Busca habitaciones libres en un rango de fechas</p>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header" style="background:var(--clr-brand);color:#fff">
+        🗓️ Filtro de fechas
+    </div>
+    <div class="card-body">
+        <form method="get" id="formDisponibilidad" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label" for="ingreso">Fecha de Ingreso</label>
+                <input type="date" name="ingreso" id="ingreso" class="form-control"
+                       value="@ingreso?.ToString("yyyy-MM-dd")"
+                       min="@hoy.ToString("yyyy-MM-dd")" required />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="salida">Fecha de Salida</label>
+                <input type="date" name="salida" id="salida" class="form-control"
+                       value="@salida?.ToString("yyyy-MM-dd")"
+                       min="@hoy.AddDays(1).ToString("yyyy-MM-dd")" required />
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary" id="btnBuscarDisponibles">
+                    🔍 Buscar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model is not null)
+{
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning">
+            No hay habitaciones disponibles para las fechas seleccionadas
+            (@ingreso?.ToString("dd/MM/yyyy") – @salida?.ToString("dd/MM/yyyy")).
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-success mb-3">
+            ✅ Se encontraron <strong>@Model.Count</strong> habitación(es) disponible(s)
+            para <strong>@noches noche(s)</strong>
+            (@ingreso?.ToString("dd/MM/yyyy") al @salida?.ToString("dd/MM/yyyy")).
+        </div>
+
+        <div class="row g-3">
+            @foreach (var h in Model)
+            {
+                var precioPorNoche = h.IdTipoHabitacionNavigation.PrecioNoche;
+                var totalEst = (noches ?? 0) * precioPorNoche;
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center"
+                             style="background:var(--clr-brand-light)">
+                            <span class="fw-bold text-primary">Hab. @h.Numero</span>
+                            <span class="badge text-bg-primary">Piso @h.Piso</span>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-1">
+                                <span class="badge text-bg-secondary">@h.IdTipoHabitacionNavigation.Nombre</span>
+                                · @h.IdTipoHabitacionNavigation.Capacidad persona(s)
+                            </p>
+                            <p class="text-muted small mb-2">
+                                S/. @precioPorNoche.ToString("N2") / noche
+                            </p>
+                            <p class="fw-bold fs-5 text-success mb-0">
+                                Total estimado: S/. @totalEst.ToString("N2")
+                            </p>
+                            <p class="text-muted small">(@noches noche(s))</p>
+                        </div>
+                        <div class="card-footer">
+                            <a asp-controller="Reservas" asp-action="Create"
+                               asp-route-idHabitacion="@h.IdHabitacion"
+                               asp-route-ingreso="@ingreso?.ToString("yyyy-MM-dd")"
+                               asp-route-salida="@salida?.ToString("yyyy-MM-dd")"
+                               class="btn btn-success btn-sm w-100"
+                               id="btnReservar-@h.IdHabitacion">
+                                📌 Reservar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+}
