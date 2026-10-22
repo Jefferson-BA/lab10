@@ -1,46 +1,54 @@
 @model Hotel.Web.Models.Habitacion
 @{
-    ViewData["Title"] = "Dar de Baja Habitación";
+    ViewData["Title"] = "Baja de Habitacion";
 }
 
 <div class="page-header">
-    <div class="page-icon">🗑️</div>
-    <h1>Dar de Baja Habitación</h1>
+    <span class="page-label">Habitaciones / Baja Logica</span>
+    <h1>Confirmar Baja</h1>
+    <p>Esta operacion es reversible unicamente desde base de datos</p>
 </div>
 
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card border-danger">
-            <div class="card-header bg-danger text-white">
-                ⚠️ Confirmar baja lógica
-            </div>
-            <div class="card-body">
-                <p class="mb-3">
-                    ¿Desea dar de baja la habitación <strong>@Model.Numero</strong>?
-                    Esta operación es un <strong>borrado lógico</strong> (se establece
-                    <code>Activo = 0</code>) y la habitación dejará de aparecer en los listados.
-                </p>
+<div style="max-width:520px">
+    <div class="panel" style="border-color:rgba(127,29,29,.5);border-top:2px solid var(--clr-danger-fg)">
+        <div class="panel__head">
+            <span class="panel__title" style="color:var(--clr-danger-fg)">Baja Logica — Habitacion @Model.Numero</span>
+        </div>
+        <div class="panel__body">
+            <p style="font-size:.85rem;color:var(--clr-text-2);margin-bottom:1.25rem;line-height:1.7">
+                Al confirmar, la habitacion pasara a estado inactivo
+                (<code style="color:var(--clr-gold);font-size:.8rem">Activo = 0</code>)
+                y dejara de aparecer en los listados de disponibilidad. No se eliminara ningun
+                dato de la base de datos.
+            </p>
 
-                <dl class="row mb-3">
-                    <dt class="col-sm-5">Número</dt>
-                    <dd class="col-sm-7">@Model.Numero</dd>
-                    <dt class="col-sm-5">Piso</dt>
-                    <dd class="col-sm-7">@Model.Piso</dd>
-                    <dt class="col-sm-5">Tipo</dt>
-                    <dd class="col-sm-7">@Model.IdTipoHabitacionNavigation.Nombre</dd>
-                </dl>
+            <table class="lux-table" style="border:none;margin-bottom:1.5rem">
+                <tbody>
+                    <tr>
+                        <td class="cell-muted" style="width:40%">Numero</td>
+                        <td style="font-family:var(--ff-display);color:var(--clr-white)">@Model.Numero</td>
+                    </tr>
+                    <tr>
+                        <td class="cell-muted">Piso</td>
+                        <td>@Model.Piso</td>
+                    </tr>
+                    <tr>
+                        <td class="cell-muted">Tipo</td>
+                        <td><span class="badge-lux badge-lux--gold">@Model.IdTipoHabitacionNavigation.Nombre</span></td>
+                    </tr>
+                </tbody>
+            </table>
 
-                <form asp-action="Delete" method="post" id="formEliminarHabitacion">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" asp-for="IdHabitacion" />
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-danger" id="btnConfirmarBaja">
-                            🗑️ Confirmar Baja
-                        </button>
-                        <a asp-action="Index" class="btn btn-outline-secondary">← Cancelar</a>
-                    </div>
-                </form>
-            </div>
+            <form asp-action="Delete" method="post" id="formEliminarHabitacion">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="IdHabitacion" />
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn-lux-danger btn-sm-lux" id="btnConfirmarBaja">
+                        Confirmar Baja
+                    </button>
+                    <a asp-action="Index" class="btn-lux-ghost btn-sm-lux">Cancelar</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>

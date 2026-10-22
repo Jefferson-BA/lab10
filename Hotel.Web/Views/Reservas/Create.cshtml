@@ -7,108 +7,114 @@
 }
 
 <div class="page-header">
-    <div class="page-icon">📌</div>
+    <span class="page-label">Reservas / Nuevo Registro</span>
     <h1>Nueva Reserva</h1>
+    <p>Complete los datos para crear una reserva en estado Pendiente</p>
 </div>
 
-<div class="row justify-content-center">
-    <div class="col-lg-7">
-        <div class="card">
-            <div class="card-header" style="background:var(--clr-brand);color:#fff">
-                Datos de la reserva
-            </div>
-            <div class="card-body">
-                <form asp-action="Create" method="post" id="formCrearReserva">
-                    @Html.AntiForgeryToken()
+<div style="max-width:600px">
+    <div class="panel panel--accent">
+        <div class="panel__head">
+            <span class="panel__title">Datos de la Reserva</span>
+        </div>
+        <div class="panel__body">
+            <form asp-action="Create" method="post" id="formCrearReserva" novalidate>
+                @Html.AntiForgeryToken()
 
-                    <div class="mb-3">
-                        <label class="form-label" for="IdHuesped">Huésped *</label>
-                        <select name="IdHuesped" id="IdHuesped" class="form-select">
-                            <option value="">— Seleccione un huésped —</option>
-                            @foreach (var item in huespedes)
+                <!-- Huesped -->
+                <div class="form-group">
+                    <label class="form-label-lux" for="IdHuesped">Huesped</label>
+                    <select name="IdHuesped" id="IdHuesped" class="form-select-lux">
+                        <option value="">Seleccione un huesped</option>
+                        @foreach (var item in huespedes)
+                        {
+                            if (item.Selected)
                             {
-                                if (item.Selected)
-                                {
-                                    <option value="@item.Value" selected="selected">@item.Text</option>
-                                }
-                                else
-                                {
-                                    <option value="@item.Value">@item.Text</option>
-                                }
+                                <option value="@item.Value" selected="selected">@item.Text</option>
                             }
-                        </select>
-                        <span asp-validation-for="IdHuesped" class="text-danger small"></span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label" for="IdHabitacion">Habitación *</label>
-                        <select name="IdHabitacion" id="IdHabitacion" class="form-select">
-                            <option value="">— Seleccione una habitación —</option>
-                            @foreach (var item in habitaciones)
+                            else
                             {
-                                if (item.Selected)
-                                {
-                                    <option value="@item.Value" selected="selected">@item.Text</option>
-                                }
-                                else
-                                {
-                                    <option value="@item.Value">@item.Text</option>
-                                }
+                                <option value="@item.Value">@item.Text</option>
                             }
-                        </select>
-                        <span asp-validation-for="IdHabitacion" class="text-danger small"></span>
-                    </div>
+                        }
+                    </select>
+                    <span asp-validation-for="IdHuesped" class="field-error"></span>
+                </div>
 
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label asp-for="FechaIngreso" class="form-label">Fecha Ingreso *</label>
-                            <input asp-for="FechaIngreso" type="date" class="form-control"
-                                   id="FechaIngreso"
-                                   value="@Model.FechaIngreso.ToString("yyyy-MM-dd")"
-                                   min="@hoy.ToString("yyyy-MM-dd")" />
-                            <span asp-validation-for="FechaIngreso" class="text-danger small"></span>
-                        </div>
-                        <div class="col-md-6">
-                            <label asp-for="FechaSalida" class="form-label">Fecha Salida *</label>
-                            <input asp-for="FechaSalida" type="date" class="form-control"
-                                   id="FechaSalida"
-                                   value="@Model.FechaSalida.ToString("yyyy-MM-dd")"
-                                   min="@hoy.AddDays(1).ToString("yyyy-MM-dd")" />
-                            <span asp-validation-for="FechaSalida" class="text-danger small"></span>
-                        </div>
-                    </div>
+                <!-- Habitacion -->
+                <div class="form-group">
+                    <label class="form-label-lux" for="IdHabitacion">Habitacion</label>
+                    <select name="IdHabitacion" id="IdHabitacion" class="form-select-lux">
+                        <option value="">Seleccione una habitacion</option>
+                        @foreach (var item in habitaciones)
+                        {
+                            if (item.Selected)
+                            {
+                                <option value="@item.Value" selected="selected">@item.Text</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="IdHabitacion" class="field-error"></span>
+                </div>
 
-                    <div class="mb-3">
-                        <label asp-for="Observaciones" class="form-label">Observaciones</label>
-                        <textarea asp-for="Observaciones" class="form-control" id="Observaciones"
-                                  rows="3" maxlength="200"
-                                  placeholder="Notas adicionales sobre la reserva (opcional)"></textarea>
-                        <span asp-validation-for="Observaciones" class="text-danger small"></span>
+                <!-- Fechas -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                    <div class="form-group" style="margin-bottom:0">
+                        <label asp-for="FechaIngreso" class="form-label-lux">Fecha de Ingreso</label>
+                        <input asp-for="FechaIngreso" type="date" class="form-control-lux"
+                               id="FechaIngreso"
+                               value="@Model.FechaIngreso.ToString("yyyy-MM-dd")"
+                               min="@hoy.ToString("yyyy-MM-dd")" />
+                        <span asp-validation-for="FechaIngreso" class="field-error"></span>
                     </div>
+                    <div class="form-group" style="margin-bottom:0">
+                        <label asp-for="FechaSalida" class="form-label-lux">Fecha de Salida</label>
+                        <input asp-for="FechaSalida" type="date" class="form-control-lux"
+                               id="FechaSalida"
+                               value="@Model.FechaSalida.ToString("yyyy-MM-dd")"
+                               min="@hoy.AddDays(1).ToString("yyyy-MM-dd")" />
+                        <span asp-validation-for="FechaSalida" class="field-error"></span>
+                    </div>
+                </div>
 
-                    <div class="d-flex gap-2 mt-4">
-                        <button type="submit" class="btn btn-primary" id="btnGuardarReserva">
-                            💾 Guardar Reserva
-                        </button>
-                        <a asp-action="Disponibles" class="btn btn-outline-secondary">← Cancelar</a>
-                    </div>
-                </form>
-            </div>
+                <!-- Observaciones -->
+                <div class="form-group mt-3">
+                    <label asp-for="Observaciones" class="form-label-lux">Observaciones</label>
+                    <textarea asp-for="Observaciones" class="form-control-lux" id="Observaciones"
+                              rows="3" maxlength="200"
+                              placeholder="Notas adicionales sobre la reserva (opcional)"></textarea>
+                    <span asp-validation-for="Observaciones" class="field-error"></span>
+                </div>
+
+                <div class="d-flex gap-2 mt-3">
+                    <button type="submit" class="btn-lux" id="btnGuardarReserva">Confirmar Reserva</button>
+                    <a asp-action="Disponibles" class="btn-lux-ghost">Cancelar</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script>
-        document.getElementById('FechaIngreso').addEventListener('change', function () {
-            var salida = document.getElementById('FechaSalida');
-            if (this.value >= salida.value) {
-                var d = new Date(this.value);
-                d.setDate(d.getDate() + 1);
-                salida.value = d.toISOString().slice(0, 10);
-            }
-            salida.min = this.value;
-        });
+        var fi = document.getElementById('FechaIngreso');
+        var fs = document.getElementById('FechaSalida');
+        if (fi && fs) {
+            fi.addEventListener('change', function () {
+                if (this.value >= fs.value) {
+                    var d = new Date(this.value);
+                    d.setDate(d.getDate() + 1);
+                    fs.value = d.toISOString().slice(0, 10);
+                }
+                fs.min = this.value;
+            });
+        }
     </script>
 }

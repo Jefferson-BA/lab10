@@ -1,8 +1,134 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Hotel Aurora — Gestión Hotelera";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- ── Hero ───────────────────────────────────────────────── -->
+<section class="hero" aria-labelledby="heroTitle">
+    <div class="hero__bg" aria-hidden="true"></div>
+    <div class="hero__grid" aria-hidden="true"></div>
+
+    <div class="hero__content">
+        <p class="hero__kicker">Sistema de Gestión Hotelera</p>
+
+        <h1 class="hero__title" id="heroTitle">
+            Administración<br>
+            <em>de alto nivel</em><br>
+            para su hotel
+        </h1>
+
+        <p class="hero__desc">
+            Hotel Aurora es una plataforma completa para la gestión de habitaciones,
+            consulta de disponibilidad en tiempo real y administración del ciclo de vida
+            completo de las reservas, diseñada bajo los estándares de la industria hotelera
+            de lujo.
+        </p>
+
+        <div class="hero__actions">
+            <a asp-controller="Reservas" asp-action="Disponibles"
+               class="btn-lux" id="ctaDisponibilidad">
+                Consultar Disponibilidad
+            </a>
+            <a asp-controller="Habitaciones" asp-action="Index"
+               class="btn-lux-outline" id="ctaHabitaciones">
+                Ver Habitaciones
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ── Features ───────────────────────────────────────────── -->
+<div class="feature-row" role="list" aria-label="Características del sistema">
+    <article class="feature-item" role="listitem">
+        <span class="feature-item__num">01</span>
+        <h3 class="feature-item__title">Gestión de Habitaciones</h3>
+        <p class="feature-item__desc">
+            Registro, edición y baja lógica de habitaciones con filtros por
+            tipo, control de número único y seguimiento de estado.
+        </p>
+        <a asp-controller="Habitaciones" asp-action="Index"
+           class="btn-lux-ghost btn-sm-lux mt-2" style="align-self:flex-start">
+            Acceder
+        </a>
+    </article>
+
+    <article class="feature-item" role="listitem">
+        <span class="feature-item__num">02</span>
+        <h3 class="feature-item__title">Disponibilidad en Tiempo Real</h3>
+        <p class="feature-item__desc">
+            Consulta de habitaciones libres para cualquier rango de fechas,
+            con cálculo automático de noches y costo estimado de estadía.
+        </p>
+        <a asp-controller="Reservas" asp-action="Disponibles"
+           class="btn-lux-ghost btn-sm-lux mt-2" style="align-self:flex-start">
+            Consultar
+        </a>
+    </article>
+
+    <article class="feature-item" role="listitem">
+        <span class="feature-item__num">03</span>
+        <h3 class="feature-item__title">Administración de Reservas</h3>
+        <p class="feature-item__desc">
+            Creación de reservas con validación de disponibilidad, seguimiento
+            de estados y cancelación de reservas activas con registro de observaciones.
+        </p>
+        <a asp-controller="Reservas" asp-action="Index"
+           class="btn-lux-ghost btn-sm-lux mt-2" style="align-self:flex-start">
+            Ver Reservas
+        </a>
+    </article>
+
+    <article class="feature-item" role="listitem">
+        <span class="feature-item__num">04</span>
+        <h3 class="feature-item__title">Arquitectura Database-First</h3>
+        <p class="feature-item__desc">
+            Construido sobre Entity Framework Core bajo el enfoque Database-First
+            con repositorios, consultas asíncronas y borrado lógico de registros.
+        </p>
+    </article>
 </div>
+
+<!-- ── Tech stack note ────────────────────────────────────── -->
+<section class="mt-4" aria-label="Stack tecnológico">
+    <div class="divider"><span class="divider__mark"></span></div>
+
+    <div class="panel panel--accent">
+        <div class="panel__head">
+            <span class="panel__title">Stack Tecnológico</span>
+            <span class="badge-lux badge-lux--gold">Lab 10</span>
+        </div>
+        <div class="panel__body">
+            <table class="lux-table" style="border:none">
+                <thead>
+                    <tr>
+                        <th>Capa</th>
+                        <th>Tecnología</th>
+                        <th>Detalle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Presentación</td>
+                        <td class="text-gold">ASP.NET Core MVC</td>
+                        <td class="cell-muted">Razor Views, Tag Helpers, PRG Pattern</td>
+                    </tr>
+                    <tr>
+                        <td>Repositorios</td>
+                        <td class="text-gold">Patrón Repository</td>
+                        <td class="cell-muted">Async/Await, AsNoTracking, SaveChangesAsync</td>
+                    </tr>
+                    <tr>
+                        <td>ORM</td>
+                        <td class="text-gold">Entity Framework Core 10</td>
+                        <td class="cell-muted">Database-First, sin migraciones</td>
+                    </tr>
+                    <tr>
+                        <td>Base de datos</td>
+                        <td class="text-gold">SQL Server Express</td>
+                        <td class="cell-muted">HotelDB — 4 tablas relacionadas</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>

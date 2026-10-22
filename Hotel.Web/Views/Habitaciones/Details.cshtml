@@ -1,48 +1,54 @@
 @model Hotel.Web.Models.Habitacion
 @{
-    ViewData["Title"] = "Detalles de Habitación";
+    ViewData["Title"] = "Detalle de Habitacion";
 }
 
 <div class="page-header">
-    <div class="page-icon">🛏️</div>
-    <h1>Detalles de Habitación</h1>
+    <span class="page-label">Habitaciones / Detalle</span>
+    <h1>Habitacion @Model.Numero</h1>
 </div>
 
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                Habitación @Model.Numero
-            </div>
-            <div class="card-body">
-                <dl class="row mb-0">
-                    <dt class="col-sm-5">Número</dt>
-                    <dd class="col-sm-7">@Model.Numero</dd>
-
-                    <dt class="col-sm-5">Piso</dt>
-                    <dd class="col-sm-7">@Model.Piso</dd>
-
-                    <dt class="col-sm-5">Tipo</dt>
-                    <dd class="col-sm-7">@Model.IdTipoHabitacionNavigation.Nombre</dd>
-
-                    <dt class="col-sm-5">Capacidad</dt>
-                    <dd class="col-sm-7">@Model.IdTipoHabitacionNavigation.Capacidad persona(s)</dd>
-
-                    <dt class="col-sm-5">Precio/Noche</dt>
-                    <dd class="col-sm-7 fw-bold">S/. @Model.IdTipoHabitacionNavigation.PrecioNoche.ToString("N2")</dd>
-
-                    <dt class="col-sm-5">Estado</dt>
-                    <dd class="col-sm-7">
-                        <span class="badge @(Model.Activo ? "text-bg-success" : "text-bg-danger")">
-                            @(Model.Activo ? "Activa" : "Inactiva")
-                        </span>
-                    </dd>
-                </dl>
-            </div>
-            <div class="card-footer d-flex gap-2">
-                <a asp-action="Edit" asp-route-id="@Model.IdHabitacion" class="btn btn-warning btn-sm">✏️ Editar</a>
-                <a asp-action="Index" class="btn btn-outline-secondary btn-sm">← Volver</a>
-            </div>
+<div style="max-width:540px">
+    <div class="panel panel--accent">
+        <div class="panel__head">
+            <span class="panel__title">Informacion de la Habitacion</span>
+            <span class="badge-lux @(Model.Activo ? "badge-lux--green" : "badge-lux--red")">
+                @(Model.Activo ? "Activa" : "Inactiva")
+            </span>
+        </div>
+        <div class="panel__body">
+            <table class="lux-table" style="border:none">
+                <tbody>
+                    <tr>
+                        <td class="cell-muted" style="width:45%">Numero</td>
+                        <td style="font-family:var(--ff-display);font-size:1.1rem;color:var(--clr-white)">
+                            @Model.Numero
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="cell-muted">Piso</td>
+                        <td>@Model.Piso</td>
+                    </tr>
+                    <tr>
+                        <td class="cell-muted">Tipo</td>
+                        <td><span class="badge-lux badge-lux--gold">@Model.IdTipoHabitacionNavigation.Nombre</span></td>
+                    </tr>
+                    <tr>
+                        <td class="cell-muted">Capacidad</td>
+                        <td>@Model.IdTipoHabitacionNavigation.Capacidad persona(s)</td>
+                    </tr>
+                    <tr>
+                        <td class="cell-muted">Precio / Noche</td>
+                        <td class="text-gold mono" style="font-size:1.05rem">
+                            S/.&nbsp;@Model.IdTipoHabitacionNavigation.PrecioNoche.ToString("N2")
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="panel__foot d-flex gap-2">
+            <a asp-action="Edit" asp-route-id="@Model.IdHabitacion" class="btn-lux-outline btn-sm-lux">Editar</a>
+            <a asp-action="Index" class="btn-lux-ghost btn-sm-lux">Volver al listado</a>
         </div>
     </div>
 </div>

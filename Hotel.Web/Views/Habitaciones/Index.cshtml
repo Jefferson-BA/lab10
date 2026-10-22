@@ -4,83 +4,80 @@
 }
 
 <div class="page-header">
-    <div class="page-icon">🛏️</div>
-    <div>
-        <h1>Habitaciones</h1>
-        <p class="text-muted mb-0">Gestión de habitaciones activas del hotel</p>
-    </div>
+    <span class="page-label">Inventario</span>
+    <h1>Habitaciones</h1>
+    <p>Registro de habitaciones activas del establecimiento</p>
 </div>
 
-<div class="card mb-4">
-    <div class="card-body">
-        <form method="get" class="row g-2 align-items-end">
-            <div class="col-md-4">
-                <label class="form-label" for="idTipo">Filtrar por tipo</label>
-                @Html.DropDownList("idTipo", ViewBag.Tipos as SelectList,
-                    "— Todos los tipos —", new { @class = "form-select", id = "idTipo" })
-            </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-primary" id="btnFiltrar">🔍 Filtrar</button>
-                <a asp-action="Index" class="btn btn-outline-secondary ms-1">✖ Limpiar</a>
-            </div>
-            <div class="col-auto ms-auto">
-                <a asp-action="Create" class="btn btn-success" id="btnNuevaHabitacion">
-                    ➕ Nueva Habitación
-                </a>
-            </div>
-        </form>
+<!-- Filter bar -->
+<div class="filter-bar" role="search">
+    <form method="get" id="formFiltroTipo" class="d-flex gap-2 align-center flex-wrap" style="flex:1">
+        <div style="flex:1;min-width:200px">
+            <label class="form-label-lux" for="idTipo">Filtrar por tipo</label>
+            @Html.DropDownList("idTipo", ViewBag.Tipos as SelectList,
+                "Todos los tipos", new { @class = "form-select-lux", id = "idTipo" })
+        </div>
+        <div class="d-flex gap-1 align-center" style="padding-top:1.3rem">
+            <button type="submit" class="btn-lux btn-sm-lux" id="btnFiltrar">Filtrar</button>
+            <a asp-action="Index" class="btn-lux-ghost btn-sm-lux">Limpiar</a>
+        </div>
+    </form>
+    <div style="padding-top:1.3rem">
+        <a asp-action="Create" class="btn-lux" id="btnNuevaHabitacion">Nueva Habitacion</a>
     </div>
 </div>
 
 @if (!Model.Any())
 {
-    <div class="alert alert-info">No hay habitaciones activas@(ViewBag.FiltroTipo != null ? " para el tipo seleccionado" : "").</div>
+    <div class="alert-lux alert-lux--info" role="status">
+        No se encontraron habitaciones activas@(ViewBag.FiltroTipo != null ? " para el tipo seleccionado" : "").
+    </div>
 }
 else
 {
-    <div class="card">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead>
+    <div class="lux-table-wrap panel">
+        <table class="lux-table" aria-label="Listado de habitaciones">
+            <thead>
+                <tr>
+                    <th scope="col">Num.</th>
+                    <th scope="col">Piso</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Capacidad</th>
+                    <th scope="col" style="text-align:right">Precio / Noche</th>
+                    <th scope="col" style="text-align:center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var h in Model)
+                {
                     <tr>
-                        <th>Número</th>
-                        <th>Piso</th>
-                        <th>Tipo</th>
-                        <th>Capacidad</th>
-                        <th class="text-end">Precio/Noche</th>
-                        <th class="text-center">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var h in Model)
-                    {
-                        <tr>
-                            <td><strong>@h.Numero</strong></td>
-                            <td>@h.Piso</td>
-                            <td>
-                                <span class="badge text-bg-primary">
-                                    @h.IdTipoHabitacionNavigation.Nombre
-                                </span>
-                            </td>
-                            <td>@h.IdTipoHabitacionNavigation.Capacidad pax</td>
-                            <td class="text-end fw-semibold">
-                                S/. @h.IdTipoHabitacionNavigation.PrecioNoche.ToString("N2")
-                            </td>
-                            <td class="text-center">
+                        <td>
+                            <span style="font-family:var(--ff-display);font-size:1.05rem;color:var(--clr-white)">
+                                @h.Numero
+                            </span>
+                        </td>
+                        <td class="cell-muted">Piso @h.Piso</td>
+                        <td>
+                            <span class="badge-lux badge-lux--gold">@h.IdTipoHabitacionNavigation.Nombre</span>
+                        </td>
+                        <td class="cell-muted">@h.IdTipoHabitacionNavigation.Capacidad pax</td>
+                        <td class="cell-right mono">
+                            S/.&nbsp;@h.IdTipoHabitacionNavigation.PrecioNoche.ToString("N2")
+                        </td>
+                        <td class="cell-center">
+                            <div class="d-flex gap-1 justify-center" style="justify-content:center">
                                 <a asp-action="Details" asp-route-id="@h.IdHabitacion"
-                                   class="btn btn-sm btn-outline-info" title="Detalles">🔎</a>
+                                   class="btn-lux-ghost btn-sm-lux" title="Ver detalle">Detalle</a>
                                 <a asp-action="Edit" asp-route-id="@h.IdHabitacion"
-                                   class="btn btn-sm btn-outline-warning" title="Editar">✏️</a>
+                                   class="btn-lux-outline btn-sm-lux" title="Editar">Editar</a>
                                 <a asp-action="Delete" asp-route-id="@h.IdHabitacion"
-                                   class="btn btn-sm btn-outline-danger" title="Dar de baja">🗑️</a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-        <div class="card-footer text-muted small">
-            Total: @Model.Count habitación(es) activa(s)
-        </div>
+                                   class="btn-lux-danger btn-sm-lux" title="Dar de baja">Baja</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="panel__foot">@Model.Count habitacion(es) activa(s)</div>
     </div>
 }
